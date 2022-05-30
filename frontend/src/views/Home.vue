@@ -8,7 +8,7 @@
   class="pa-4"
   ref="search_form">
 <h2 align="center"> 카풀 검색 필터 </h2>
-<p> -- search 테스트 예시입니다 -- </p>
+<!-- <p> -- search 테스트 예시입니다 -- </p>
 <p>시작일 : {{search_dates[0]}}</p>
 <p>종료일 : {{search_dates[1]}}</p>
 <p>출발지 :{{search_starting_point}}</p>
@@ -16,7 +16,8 @@
 <p>요일 :{{search_dotw}}</p>
 <p>성별 :{{search_gender}}</p>
 <p>도착시간 :{{search_destination_time}}</p>
-<p></p>
+<p>버튼값 :{{search_button}}</p>
+    <v-btn @click="count_var">테스트</v-btn>  -->
 
 <v-spacer></v-spacer>
 
@@ -156,7 +157,7 @@
  <!-- search_info -->
     <v-btn
        color="primary"
-       @click="[search_data_post(),search_info()]"
+       @click="[count_true(),search_data_post(),search_info()]"
        >
 
       카풀 검색
@@ -170,7 +171,7 @@
 
       <v-btn
        color="primary"
-       @click="delete_info()"
+       @click="[count_false(),delete_info()]"
        >
 
       초기화
@@ -221,7 +222,6 @@
           <v-col
                 cols="12"
                 sm="6"
-                md="4"
               >
           <v-text-field
             ref="input_name"
@@ -235,23 +235,20 @@
           </v-col>
 
 
-          <v-col
+
+         <v-col
                 cols="12"
                 sm="6"
-                md="4"
               >
           <v-select
-            :items="['Male', 'Female']"
-            ref="input_gender"
-            v-model="input_gender"
-            :rules="[() => !!input_gender || '성별을 선택하세요']"
-            label="성별*"
+            :items="['1', '2', '3', '4', '5', '6']"
+            ref="input_max_passenger"
+            v-model="input_max_passenger"
+            :rules="[() => !!input_max_passenger || '탑승 가능 인원을 선택하세요']"
+            label="탑승 가능 인원*"
             required
           ></v-select>
-          </v-col>
-
-
-
+         </v-col>
 
           <v-col
             cols="12"
@@ -275,20 +272,7 @@
     </v-col>
 
 
-         <v-col
-                cols="12"
-                sm="6"
-                md="4"
-              >
-          <v-select
-            :items="['1', '2', '3', '4', '5', '6']"
-            ref="input_max_passenger"
-            v-model="input_max_passenger"
-            :rules="[() => !!input_max_passenger || '탑승 가능 인원을 선택하세요']"
-            label="탑승 가능 인원*"
-            required
-          ></v-select>
-         </v-col>
+
 
 
 
@@ -447,61 +431,50 @@
      
 
 
-
+<!-- 검색 하기 전, 메인 페이지 카풀 목록 -->
 <v-simple-table>
     <template 
     v-slot:default
     v-if="search_button=='false'">
       <thead>
         <tr>
-          <th class="text-left" align="center">
+          
+          <th class="text-center" align="center">
             이름
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             성별
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             남은자리
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             시작일
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             종료일
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             요일
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             도착시간
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             출발지
           </th>
 
-          <th class="text-left" align="center">
+          <th class="text-center" align="center">
             도착지
           </th>
 
-          <th class="text-left" align="center">
-            탑승시간
-          </th>
-
-
-          <th class="text-left" align="center">
-            추가시간
-          </th>
-
-          <th class="text-left" align="center">
-            거리차이
-          </th>
 
           
 
@@ -518,13 +491,9 @@
           <td width="8%" align="center">{{ item.start_date.substring(0,10) }}</td>
           <td width="8%" align="center">{{ item.end_date.substring(0,10) }}</td>
           <td width="8%" align="center">{{ item.dotw.join(',') }}</td>
-          <td width="7%" align="center">null</td>
+          <td width="8%" align="center"> 검색 필요</td>
           <td width="9%" align="center">{{ item.starting_point }}</td>
           <td width="9%" align="center">{{ item.destination_point }}</td>
-          <td width="7%" align="center"></td> <!-- 탑승시간 -->
-          <td width="7%" align="center"></td> <!-- 도착시간 -->
-          <td width="7%" align="center"></td> <!-- 추가시간 -->
-          <td width="7%" align="center"></td> <!-- 거리차이 -->
 
 
         </tr>
@@ -564,15 +533,15 @@
           </th>
 
           <th class="text-left">
-            도착시간
-          </th>
-
-          <th class="text-left">
             출발지
           </th>
 
           <th class="text-left">
             도착지
+          </th>
+
+          <th class="text-left">
+            도착시간
           </th>
 
           <th class="text-left">
@@ -597,24 +566,22 @@
       </thead>
       <tbody>
         <tr
-          v-for="item in get_search_list" 
-          :key="item.name"
+          v-for="item2 in get_search_list" 
+          :key="item2.name"
         >
 
-          <td width="7%">{{ item.name }}</td>
-          <td width="7%">{{ item.gender }}</td>
-          <td width="7%">{{ item.max_passenger }}</td>
-          <td width="7%">{{ item.start_date }}</td>
-          <td width="7%">{{ item.end_date }}</td>
-          <td width="9%">{{ item.dotw }}</td>
-          <td width="9%">{{ item.starting_point }}</td>
-          <td width="9%">{{ item.gender }}</td>
-          <td width="9%">{{ item.destination_point }}</td>
-          <td width="9%">{{ item.destination_point }}</td>
-          <td width="9%">{{ item.desired_arrival_time }}</td>
-          <td width="9%">{{ item.ride_time}}</td>
-          <td width="9%">{{ item.time_difference}}</td>
-          <td width="9%">{{ item.distance_difference}}</td>
+          <td width="7%">{{ item2.name }}</td>
+          <td width="7%">{{ item2.gender }}</td>
+          <td width="7%">{{ item2.max_passenger }}</td>
+          <td width="7%">{{ item2.start_date }}</td>
+          <td width="7%">{{ item2.end_date }}</td>
+          <td width="9%">{{ item2.dotw.join(',') }}</td>
+          <td width="9%">{{ item2.starting_point }}</td>
+          <td width="9%">{{ item2.destination_point }}</td>
+          <td width="9%">{{ item2.desired_arrival_time }}</td>
+          <td width="9%">{{ item2.ride_time}}</td>
+          <td width="9%">{{ item2.time_difference}}</td>
+          <td width="9%">{{ item2.distance_difference}}</td>
 
 
 <td width="7%">
@@ -673,7 +640,6 @@
                   required
                 ></v-text-field>
               </v-col>
-              {{candidate_desired_time}}
              
             </v-row>
           </v-container>
@@ -861,7 +827,6 @@ export default {
             errorMessages: '',
 
             input_name: null, // 카풀 등록
-            input_gender: null,
             input_max_passenger: null,
             input_dates: ['2022-06-01', '2022-06-08'],
 
@@ -917,14 +882,12 @@ export default {
       form() { // 카풀 등록 데이터
         return {
           input_name: this.input_name,
-          input_gender: this.input_gender,
           input_max_passenger: this.input_max_passenger, 
-          
           input_dotw: this.input_dotw, // 요일
           input_starting_point: this.input_starting_point, 
+
           input_destination_point:this.input_destination_point,
           input_destination_time:this.input_destination_time,
-
           input_car_number:this.input_car_number,
           input_car_type:this.input_car_type
         }
@@ -947,6 +910,14 @@ export default {
 
 
     methods: {
+
+      gender_test(){
+        if(this.search_gender === "상관없음"){
+          this.search_gender =["male","Female"]
+        }
+
+      },
+
       get_data(){ // 데이터 처음부터 가져와줌.
         axios
         .get("http://ec2-18-117-73-79.us-east-2.compute.amazonaws.com:3000/list")
@@ -993,17 +964,16 @@ export default {
       insertNew() {     // 카풀 등록 함수
       axios
         .post("http://ec2-18-117-73-79.us-east-2.compute.amazonaws.com:3000/register", 
-        {//"client_id": this.input_name, // 사용자id (DB id랑 동일)
-        //"gender": this.input_gender,
-        "max_passenger": this.input_max_passenger, // 최대 탑승자 수
-        "start_date": this.input_dates[0], // 시작일
-        "end_date": this.input_dates[1], // 종료일
-        "dotw": this.input_dotw, // 요일
-        "start_name": this.input_starting_point, // 출발지(운전자)
-        "goal_name": this.input_destination_point, // 도착지(운전자)
-        "arrival_time" : this.input_destination_time, // 도착 희망시간(운전자)
-        "car_num" : this.input_car_number, // 차량번호
-        "car_category" : this.car_category, // 차종
+        {client_id: 1, // 사용자id (DB id랑 동일)
+        max_passenger: this.input_max_passenger, // 최대 탑승자 수
+        start_date: this.input_dates[0], // 시작일
+        end_date: this.input_dates[1], // 종료일
+        dotw: this.input_dotw, // 요일
+        start_name: this.input_starting_point, // 출발지(운전자)
+        goal_name: this.input_destination_point, // 도착지(운전자)
+        arrival_time : this.input_destination_time, // 도착 희망시간(운전자)
+        car_num : this.input_car_number, // 차량번호
+        car_category : this.input_car_type, // 차종
 
         })
        .then(res => {
@@ -1047,21 +1017,23 @@ export default {
 
 
         search_data_post(){
-         axios
-        .get( "http://ec2-18-117-73-79.us-east-2.compute.amazonaws.com:3000/filter",
-        {"start_date":this.search_dates[0],
-        "end_date":this.search_dates[1],
-        "start_name":this.search_starting_point,
-        "goal_name":this.search_destination_point,
-        "desired_arrival_time":this.search_destination_time,
-        "gender":this.search_gender,
-        "dotw":this.search_dotw,
-        },
-        )
+        if(this.search_gender === "상관없음"){ // gender 가 상관 없음이면
+            
+
+         axios.get( "http://ec2-18-117-73-79.us-east-2.compute.amazonaws.com:3000/filter",
+        {params:{
+        start_date:this.search_dates[0],
+        end_date:this.search_dates[1],
+        start_name:this.search_starting_point,
+        goal_name:this.search_destination_point,
+        //"desired_arrival_time":this.search_destination_time,
+        gender:['Male', 'Female'],
+        dotw:this.search_dotw,
+        }})
         .then(res => {
           console.log(res.data)
           this.get_search_list=res.data.data
-          console.log("search_data_post 함수입니다. 검색 값을 서버에 보내고 요청 데이터를 받아옵니다.")
+          console.log("search_data_post 함수입니다. 검색 값을 서버에 보내고 요청 데이터를 받아옵니다. gender 상관없음")
           
         })
         .catch(err => {
@@ -1071,25 +1043,49 @@ export default {
         .then(()=>{
 
         })
+        } else { // gender 가 Male 또는 Female 이면
+         axios.get( "http://ec2-18-117-73-79.us-east-2.compute.amazonaws.com:3000/filter",
+        {params:{
+        start_date:this.search_dates[0],
+        end_date:this.search_dates[1],
+        start_name:this.search_starting_point,
+        goal_name:this.search_destination_point,
+        //"desired_arrival_time":this.search_destination_time,
+        gender:this.search_gender,
+        dotw:this.search_dotw,
+        }})
+        .then(res => {
+          console.log(res.data)
+          this.get_search_list=res.data.data
+          console.log("search_data_post 함수입니다. 검색 값을 서버에 보내고 요청 데이터를 받아옵니다. gender 특정 값")
+          
+        })
+        .catch(err => {
+          console.log(err)
+          console.log('search_data_post 안옴;')
+        })
+        .then(()=>{
+
+        })
+        }
 
 
        },
 
        candidate(){
         axios
-        .post( "http://ec2-18-117-73-79.us-east-2.compute.amazonaws.com:3000//candidate",
-        {"user_id":1, // 김인하로 진행
-        "carpool_id" : 1,
-        "start_name":this.search_starting_point, // 출발지(탑승자)
-        "start_date":this.search_dates[0], // 시작일
-        "end_date":this.search_dates[1], // 종료일
-        "dotw":this.search_dotw, // 요일
-        "desired_time":this.candidate_desired_time, // 탑승 희망 시간
+        .post( 'http://ec2-18-117-73-79.us-east-2.compute.amazonaws.com:3000/candidate',
+        {user_id:1, // 김인하로 진행
+        carpool_id : 1,
+        start_name:this.search_starting_point, // 출발지(탑승자)
+        start_date:this.search_dates[0], // 시작일
+        end_date:this.search_dates[1], // 종료일
+        dotw:this.search_dotw, // 요일
+        desired_time:this.candidate_desired_time, // 탑승 희망 시간
         },
         )
         .then(res => {
           console.log(res)
-          this.get_search_list=res.data
           console.log("candidate 함수입니다. 카풀 신청을 진행합니다.")
           
         })
@@ -1111,7 +1107,7 @@ export default {
        search_info() { // 카풀 검색 함수
         this.formHasErrors = false
 
-        this.search_button ='true'
+        //this.search_button ='true'
         
         
 
@@ -1125,7 +1121,7 @@ export default {
         })
 
         if(this.search_formHasErrors == false){
-          this.search_button ='true'
+          //this.search_button ='true'
         }
 
 
@@ -1138,15 +1134,29 @@ export default {
 
        delete_info() { // 카풀 초기화 함수. 내용도 다 reset 시킴
         this.search_button='false'
-
         this.errorMessages = []
         this.search_formHasErrors = false
 
         Object.keys(this.search_form).forEach(f => {
           this.$refs[f].reset()
+          this.search_button='false'
         })
+
+
          
          
+       },
+
+       count_true(){ // true 로 만들어서 검색 필터만 보이게
+         if(this.search_button==='false'){
+           this.search_button='true'
+         }
+       },
+
+        count_false(){ // 메인 목록 리스트 보이게
+         if(this.search_button=='true'){
+           this.search_button='false'
+         }
        },
     }
   }
